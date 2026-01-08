@@ -20,57 +20,145 @@ It lets you:
 - Visualize the evolving decision boundary
 
 ---
-
 ## 🔢 Mathematical overview
 
-This section summarizes the key equations used in a basic fully-connected feedforward network.
+### Notation
 
-Notation:
-- For layer l:
-  - W^{[l]} : weight matrix of shape (n^{[l]}, n^{[l-1]})
-  - b^{[l]} : bias vector of shape (n^{[l]}, 1)
-  - z^{[l]} : pre-activation (W^{[l]} a^{[l-1]} + b^{[l]})
-  - a^{[l]} : activation output of layer l
-- For m examples, X ∈ R^{n^{[0]}×m}, Y ∈ R^{n^{[L]}×m}
+For a network with \( L \) layers and \( m \) examples:
 
-Forward propagation (single layer):
-- z^{[l]} = W^{[l]} a^{[l-1]} + b^{[l]}
-- a^{[l]} = g^{[l]}(z^{[l]})
+$$
+\mathbf{X} \in \mathbb{R}^{n^{[0]} \times m}, \quad
+\mathbf{Y} \in \mathbb{R}^{n^{[L]} \times m}
+$$
 
-Common activation functions:
-- Sigmoid:
-  - σ(z) = 1 / (1 + e^{-z})
-  - σ'(z) = σ(z) (1 − σ(z))
-- ReLU:
-  - ReLU(z) = max(0, z)
-  - derivative: 1_{z>0}
-- Softmax (for multi-class outputs):
-  - softmax(z)_i = exp(z_i) / sum_j exp(z_j)
+For layer \( l \):
 
-Loss functions:
-- Binary cross-entropy (for one output unit):
-  - For one example: L(a, y) = −[ y log a + (1−y) log(1−a) ]
-  - For m examples: J = −(1/m) ∑_{i=1}^m [ y^{(i)} log a^{(i)} + (1−y^{(i)}) log(1−a^{(i)}) ]
-- Categorical cross-entropy (for K classes, softmax outputs):
-  - J = −(1/m) ∑_{i=1}^m ∑_{k=1}^K y_k^{(i)} log a_k^{(i)}
+$$
+\mathbf{W}^{[l]} \in \mathbb{R}^{n^{[l]} \times n^{[l-1]}}
+$$
 
-Backpropagation (gradient recipes):
+$$
+\mathbf{b}^{[l]} \in \mathbb{R}^{n^{[l]} \times 1}
+$$
 
-Output layer (example: sigmoid + binary cross-entropy):
-- dz^{[L]} = a^{[L]} − y
-- dW^{[L]} = (1/m) dz^{[L]} (a^{[L-1]})^T
-- db^{[L]} = (1/m) ∑_{i=1}^m dz^{[L]}_{:,i}
+$$
+\mathbf{z}^{[l]} = \mathbf{W}^{[l]} \mathbf{a}^{[l-1]} + \mathbf{b}^{[l]}
+$$
 
-Hidden layer l (with elementwise activation g):
-- dz^{[l]} = (W^{[l+1]})^T dz^{[l+1]} * g'(z^{[l]})
-- dW^{[l]} = (1/m) dz^{[l]} (a^{[l-1]})^T
-- db^{[l]} = (1/m) ∑_{i=1}^m dz^{[l]}_{:,i}
-
-Gradient descent parameter update:
-- W^{[l]} := W^{[l]} − α dW^{[l]}
-- b^{[l]} := b^{[l]} − α db^{[l]}
+$$
+\mathbf{a}^{[l]} = g^{[l]}(\mathbf{z}^{[l]})
+$$
 
 ---
+
+### Forward propagation
+
+$$
+\mathbf{z}^{[l]} = \mathbf{W}^{[l]} \mathbf{a}^{[l-1]} + \mathbf{b}^{[l]}
+$$
+
+$$
+\mathbf{a}^{[l]} = g^{[l]}(\mathbf{z}^{[l]})
+$$
+
+---
+
+### Activation functions
+
+Sigmoid:
+$$
+\sigma(z) = \frac{1}{1 + e^{-z}}
+$$
+
+$$
+\sigma'(z) = \sigma(z)(1 - \sigma(z))
+$$
+
+ReLU:
+$$
+\text{ReLU}(z) = \max(0, z)
+$$
+
+Derivative of ReLU:
+- equals 1 if \( z > 0 \)
+- equals 0 otherwise
+
+Softmax:
+$$
+\text{softmax}(z)_i =
+\frac{e^{z_i}}{\sum_{j} e^{z_j}}
+$$
+
+---
+
+### Loss functions
+
+Binary cross-entropy:
+$$
+J = -\frac{1}{m} \sum_{i=1}^{m}
+\left[
+y^{(i)} \log a^{(i)} +
+(1 - y^{(i)}) \log(1 - a^{(i)})
+\right]
+$$
+
+Categorical cross-entropy:
+$$
+J = -\frac{1}{m}
+\sum_{i=1}^{m}
+\sum_{k=1}^{K}
+y_k^{(i)} \log a_k^{(i)}
+$$
+
+---
+
+### Backpropagation
+
+Output layer:
+$$
+\mathbf{dz}^{[L]} = \mathbf{a}^{[L]} - \mathbf{y}
+$$
+
+$$
+\mathbf{dW}^{[L]} =
+\frac{1}{m} \mathbf{dz}^{[L]} (\mathbf{a}^{[L-1]})^T
+$$
+
+$$
+\mathbf{db}^{[L]} =
+\frac{1}{m} \sum_{i=1}^{m} \mathbf{dz}^{[L]}_{:,i}
+$$
+
+Hidden layer:
+$$
+\mathbf{dz}^{[l]} =
+(\mathbf{W}^{[l+1]})^T \mathbf{dz}^{[l+1]}
+\odot g'(\mathbf{z}^{[l]})
+$$
+
+$$
+\mathbf{dW}^{[l]} =
+\frac{1}{m} \mathbf{dz}^{[l]} (\mathbf{a}^{[l-1]})^T
+$$
+
+$$
+\mathbf{db}^{[l]} =
+\frac{1}{m} \sum_{i=1}^{m} \mathbf{dz}^{[l]}_{:,i}
+$$
+
+---
+
+### Gradient descent
+
+$$
+\mathbf{W}^{[l]} =
+\mathbf{W}^{[l]} - \alpha \mathbf{dW}^{[l]}
+$$
+
+$$
+\mathbf{b}^{[l]} =
+\mathbf{b}^{[l]} - \alpha \mathbf{db}^{[l]}
+$$
 
 ## 🧩 High-level training loop (pseudocode)
 
