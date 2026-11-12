@@ -1,10 +1,10 @@
-# 🧠 Neural Network From Scratch
+#  Neural Network From Scratch
 
 This project implements a simple feedforward neural network written from scratch in Python using **NumPy**. It is a pedagogical implementation designed to bridge the gap between mathematical theory and computational practice.
 
 ---
 
-## 🎯 Project Goals
+##  Project Goals
 - **Full implementation:** Build a deep neural network from the ground up.
 - **Mathematical Mastery:**
   - Weight and Bias initialization.
@@ -15,7 +15,7 @@ This project implements a simple feedforward neural network written from scratch
 
 ---
 
-## 🔢 Mathematical Overview
+##  Mathematical Overview
 
 ### Notation
 For a network with $L$ layers and $m$ examples:
@@ -62,7 +62,7 @@ $$db^{[l]} = \frac{1}{m} \sum dZ^{[l]}$$
 
 ---
 
-## 🧩 Training Loop (Pseudocode)
+##  Training Loop (Pseudocode)
 
 ```python
 # Initialize weights and biases
